@@ -1,0 +1,113 @@
+-- Using Temp Tables --
+-- Union all the serparate table into one master table--
+
+WITH
+  all_data AS(
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202005`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202006`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202007`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202008`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202009`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202010`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202011`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202012`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202101`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202102`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202103`
+  UNION ALL
+  SELECT
+    * EXCEPT (start_station_id,
+      end_station_id)
+  FROM
+    `keen-extension-320523.Cyclistic.202104`),
+
+--Find difference between end_time and start_time as minutes as ride_length_minute--
+--Create new column for day of week for each record. Have to extract it from started_at column--
+--Use CASE statement to set the days as Sunday - Saturday and name column day_of_week
+
+  agg_data AS (
+  SELECT
+    *,
+    TIMESTAMP_DIFF(ended_at, started_at, MINUTE) AS ride_length_minute,
+    CASE
+      WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 1 THEN 'Sunday'
+      WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 2 THEN 'Monday'
+      WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 3 THEN 'Tuesday'
+      WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 4 THEN 'Wednesday'
+      WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 5 THEN 'Thursday'
+      WHEN (EXTRACT(DAYOFWEEK FROM started_at)) = 6 THEN 'Friday'
+    ELSE
+        'Saturday'
+ END
+    AS day_of_week
+  FROM
+    all_data),
+
+-- Some errors where length of ride would be negative. Bad data. Removed --
+
+  positive_data AS (
+SELECT 
+  * 
+FROM 
+  agg_data 
+WHERE 
+  ride_length_minute > 0)
+
+###########################################################################################################
+
+SELECT *
+FROM positive_data 
