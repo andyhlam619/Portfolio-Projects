@@ -1,5 +1,5 @@
--- Using Temp Tables --
--- Union all the serparate table into one master table--
+-- Using Temp Tables 
+-- Union all the serparate table into one master table
 
 WITH
   all_data AS(
@@ -97,7 +97,7 @@ WITH
   FROM
     all_data),
 
--- Some errors where length of ride would be negative. Bad data. Removed --
+-- Some errors where length of ride would be negative. Bad data removed. --
 
   positive_data AS (
 SELECT 
@@ -106,8 +106,6 @@ FROM
   agg_data 
 WHERE 
   ride_length_minute > 0)
-
-###########################################################################################################
 
 SELECT *
 FROM positive_data 
