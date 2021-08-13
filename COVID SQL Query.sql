@@ -1,3 +1,5 @@
+-- All data 
+
 SELECT *
 FROM CovidPortfolioProject..CovidDeaths
 
@@ -26,7 +28,7 @@ WHERE continent is not null
 GROUP BY population, location
 ORDER BY percent_population_infected DESC
 
---Highest Death Count per Country
+-- Highest Death Count per Country
 
 SELECT
 	location, MAX(CAST(total_deaths as int)) AS highst_death_cnt, population
@@ -35,7 +37,7 @@ WHERE continent is not null
 GROUP BY population, location
 ORDER BY highst_death_cnt DESC
 
---Highest Death Count per Continent
+-- Highest Death Count per Continent
 
 SELECT
 	location, MAX(CAST(total_deaths as int)) AS highst_death_cnt
@@ -44,7 +46,7 @@ WHERE continent is null AND location NOT IN ('world', 'international')
 GROUP BY location
 ORDER BY highst_death_cnt DESC
 
---Global Covid Numbers per Day
+-- Global Covid Numbers per Day
 
 SELECT
 	date, SUM(new_cases) as total_cases, SUM(CAST(new_deaths as int)) as total_death, (SUM(CAST(new_deaths as int))/SUM(new_cases))*100 AS death_percentage
@@ -53,14 +55,14 @@ WHERE continent is not null
 GROUP BY date
 ORDER BY date
 
---General Global Covid Numbers
+-- General Global Covid Numbers
 
 SELECT
 	SUM(new_cases) as total_cases, SUM(CAST(new_deaths as int)) as total_death, (SUM(CAST(total_deaths as int))/SUM(total_cases))*100 AS death_percentage
 FROM CovidPortfolioProject..CovidDeaths
 WHERE continent is not null 
 
---Total Population vs Vaccinations using Temp Table and Joins
+-- Total Population vs Vaccinations using Temp Table and Joins
 
 WITH 
 	all_data  (continent, location, date, population, new_vaccinations, rolling_total_vax)
@@ -77,7 +79,7 @@ WHERE vax.new_vaccinations is not null AND death.continent is not null
 SELECT *, (rolling_total_vax/population)*100 AS total_pop_vax_percentage
 FROM all_data
 
---Temp Table Method 2
+-- Temp Table Method 2
 
 DROP TABLE IF exists #percent_pop_vax
 CREATE TABLE #percent_pop_vax
@@ -101,7 +103,7 @@ WHERE vax.new_vaccinations is not null AND death.continent is not null
 SELECT *, (rolling_total_vax/population)*100 AS total_pop_vax_percentage
 FROM #percent_pop_vax
 
---Creating Views
+-- Creating Views
 
 CREATE VIEW percent_pop_vax as 
 SELECT 
